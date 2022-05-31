@@ -1,5 +1,5 @@
--- Лаптев М.И. ПС-22
--- 1. Добавить внешние ключи.
+п»ї-- Р›Р°РїС‚РµРІ Рњ.Р. РџРЎ-22
+-- 1. Р”РѕР±Р°РІРёС‚СЊ РІРЅРµС€РЅРёРµ РєР»СЋС‡Рё.
 ALTER TABLE production
 ADD CONSTRAINT FK_production_medicine
 	FOREIGN KEY (id_medicine)
@@ -27,29 +27,29 @@ ADD CONSTRAINT FK_order_production
 	FOREIGN KEY (id_pharmacy)
 	REFERENCES pharmacy (id_pharmacy);
 
--- 2. Выдать информацию по всем заказам лекарства “Кордерон” компании “Аргус”
---    с указанием названий аптек, дат, объема заказов.
+-- 2. Р’С‹РґР°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РїРѕ РІСЃРµРј Р·Р°РєР°Р·Р°Рј Р»РµРєР°СЂСЃС‚РІР° вЂњРљРѕСЂРґРµСЂРѕРЅвЂќ РєРѕРјРїР°РЅРёРё вЂњРђСЂРіСѓСЃвЂќ
+--    СЃ СѓРєР°Р·Р°РЅРёРµРј РЅР°Р·РІР°РЅРёР№ Р°РїС‚РµРє, РґР°С‚, РѕР±СЉРµРјР° Р·Р°РєР°Р·РѕРІ.
 SELECT m.name 'drug name', c.name company, ph.name pharmacy, o.date, o.quantity 
 FROM medicine m
 JOIN production pr ON m.id_medicine = pr.id_medicine
 JOIN company c ON pr.id_company = c.id_company
 JOIN [order] o ON pr.id_production = o.id_production
 JOIN pharmacy ph ON o.id_pharmacy = ph.id_pharmacy
-WHERE m.name = 'Кордерон' AND c.name = 'Аргус'
+WHERE m.name = 'РљРѕСЂРґРµСЂРѕРЅ' AND c.name = 'РђСЂРіСѓСЃ'
 
--- 3. Дать список лекарств компании “Фарма”, на которые не были сделаны заказы
---    до 25 января.
+-- 3. Р”Р°С‚СЊ СЃРїРёСЃРѕРє Р»РµРєР°СЂСЃС‚РІ РєРѕРјРїР°РЅРёРё вЂњР¤Р°СЂРјР°вЂќ, РЅР° РєРѕС‚РѕСЂС‹Рµ РЅРµ Р±С‹Р»Рё СЃРґРµР»Р°РЅС‹ Р·Р°РєР°Р·С‹
+--    РґРѕ 25 СЏРЅРІР°СЂСЏ.
 SELECT c.name company, m.name 'drug name', MIN(o.date) drug_first_order_date
 FROM medicine m
 JOIN production pr ON m.id_medicine = pr.id_medicine
 JOIN company c ON pr.id_company = c.id_company
 JOIN [order] o ON o.id_production = pr.id_production
-WHERE c.name = 'Фарма'
+WHERE c.name = 'Р¤Р°СЂРјР°'
 GROUP BY c.name, m.name
 HAVING MIN(o.date) > '25/01/2019'
 
--- 4. Дать минимальный и максимальный баллы лекарств каждой фирмы, которая
---    оформила не менее 120 заказов.
+-- 4. Р”Р°С‚СЊ РјРёРЅРёРјР°Р»СЊРЅС‹Р№ Рё РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ Р±Р°Р»Р»С‹ Р»РµРєР°СЂСЃС‚РІ РєР°Р¶РґРѕР№ С„РёСЂРјС‹, РєРѕС‚РѕСЂР°СЏ
+--    РѕС„РѕСЂРјРёР»Р° РЅРµ РјРµРЅРµРµ 120 Р·Р°РєР°Р·РѕРІ.
 SELECT c.name, MAX(pr.rating) max_rating, MIN(pr.rating) min_ratingv 
 FROM company c
 JOIN production pr ON pr.id_company = c.id_company
@@ -57,8 +57,8 @@ JOIN [order] o ON o.id_production = pr.id_production
 GROUP BY c.name
 HAVING COUNT(*) >= 120
 
--- 5. Дать списки сделавших заказы аптек по всем дилерам компании “AstraZeneca”.
---    Если у дилера нет заказов, в названии аптеки проставить NULL.
+-- 5. Р”Р°С‚СЊ СЃРїРёСЃРєРё СЃРґРµР»Р°РІС€РёС… Р·Р°РєР°Р·С‹ Р°РїС‚РµРє РїРѕ РІСЃРµРј РґРёР»РµСЂР°Рј РєРѕРјРїР°РЅРёРё вЂњAstraZenecaвЂќ.
+--    Р•СЃР»Рё Сѓ РґРёР»РµСЂР° РЅРµС‚ Р·Р°РєР°Р·РѕРІ, РІ РЅР°Р·РІР°РЅРёРё Р°РїС‚РµРєРё РїСЂРѕСЃС‚Р°РІРёС‚СЊ NULL.
 SELECT DISTINCT c.id_company, c.name, d.id_dealer, d.name, ph.name 
 FROM dealer d
 JOIN company c ON d.id_company = c.id_company
@@ -67,10 +67,10 @@ LEFT JOIN pharmacy ph ON o.id_pharmacy = ph.id_pharmacy
 WHERE c.name = 'AstraZeneca'
 ORDER BY d.id_dealer, ph.name
 
--- 6. Уменьшить на 20% стоимость всех лекарств, если она превышает 3000, а
---    длительность лечения не более 7 дней.
+-- 6. РЈРјРµРЅСЊС€РёС‚СЊ РЅР° 20% СЃС‚РѕРёРјРѕСЃС‚СЊ РІСЃРµС… Р»РµРєР°СЂСЃС‚РІ, РµСЃР»Рё РѕРЅР° РїСЂРµРІС‹С€Р°РµС‚ 3000, Р°
+--    РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р»РµС‡РµРЅРёСЏ РЅРµ Р±РѕР»РµРµ 7 РґРЅРµР№.
 
--- v1, хуже execution plan
+-- v1, С…СѓР¶Рµ execution plan
 --UPDATE production
 --SET price = price * 0.8
 --WHERE id_production IN (
@@ -85,8 +85,8 @@ FROM production p
 JOIN medicine m ON m.id_medicine = p.id_medicine
 WHERE cure_duration <= 7 AND price > 3000
 
--- 7. Добавить необходимые индексы для всех таблиц
--- таск 2
+-- 7. Р”РѕР±Р°РІРёС‚СЊ РЅРµРѕР±С…РѕРґРёРјС‹Рµ РёРЅРґРµРєСЃС‹ РґР»СЏ РІСЃРµС… С‚Р°Р±Р»РёС†
+-- С‚Р°СЃРє 2
 CREATE NONCLUSTERED INDEX IX_production_id_medicine
 ON production
 (
@@ -99,14 +99,14 @@ ON [order]
 	id_production ASC
 ) INCLUDE (id_pharmacy, date, quantity)
 
--- таск 3
+-- С‚Р°СЃРє 3
 CREATE NONCLUSTERED INDEX IX_production_id_company
 ON production
 (
 	id_company ASC	
 ) INCLUDE (id_medicine)
 
--- таск 6
+-- С‚Р°СЃРє 6
 CREATE NONCLUSTERED INDEX IX_medicine_cure_duration
 ON medicine
 (
